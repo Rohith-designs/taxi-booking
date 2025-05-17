@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useBooking } from "../contexts/BookingContext";
@@ -13,7 +13,9 @@ export default function BookingConfirmationPage() {
   const { getBookingById, assignDriver } = useBooking();
   const navigate = useNavigate();
   
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(15); // Reduced from 60 to 15 seconds
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const driverAssignedRef = useRef(false);
   
   useEffect(() => {
     if (!user) {
@@ -31,20 +33,34 @@ export default function BookingConfirmationPage() {
       navigate("/dashboard");
       return;
     }
+
+    // If the booking already has a driver assigned, don't start the timer
+    if (booking.status === 'confirmed' && booking.driver) {
+      driverAssignedRef.current = true;
+      return;
+    }
     
-    // For demo purposes, auto-assign a driver after 60 seconds
-    const timer = setInterval(() => {
+    // For demo purposes, auto-assign a driver after the countdown
+    timerRef.current = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
-          assignDriver(id);
+          clearInterval(timerRef.current!);
+          // Only assign a driver if one hasn't been assigned already
+          if (!driverAssignedRef.current) {
+            driverAssignedRef.current = true;
+            assignDriver(id);
+          }
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     
-    return () => clearInterval(timer);
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
   }, [id, user, navigate, getBookingById, assignDriver]);
   
   const booking = id ? getBookingById(id) : null;
@@ -92,7 +108,7 @@ export default function BookingConfirmationPage() {
               {booking.status === 'pending' ? (
                 <div>
                   <p className="mb-2">Waiting for driver assignment...</p>
-                  <p className="text-sm text-muted-foreground">This usually takes 1-2 minutes</p>
+                  <p className="text-sm text-muted-foreground">This usually takes a few moments</p>
                   
                   {/* Demo countdown */}
                   {countdown > 0 && (
