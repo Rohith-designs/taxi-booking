@@ -1,7 +1,8 @@
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 // Define the shape of our booking object
 export interface Booking {
@@ -73,28 +74,111 @@ export function BookingProvider({ children }: BookingProviderProps) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const { user } = useAuth();
 
+  // Fetch bookings when user changes
+  useEffect(() => {
+    if (user) {
+      fetchBookings();
+    } else {
+      setBookings([]);
+    }
+  }, [user]);
+
+  const fetchBookings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("Bookings")
+        .select("*")
+        .eq("user_id", user?.id);
+
+      if (error) {
+        console.error("Error fetching bookings:", error);
+        return;
+      }
+
+      if (data) {
+        // Transform the data to match our Booking interface
+        const transformedBookings = data.map(item => ({
+          id: String(item.id),
+          userId: item.user_id,
+          pickup: item.pickup_location || '',
+          dropoff: item.dropoff_location || '',
+          date: item.booking_date || '',
+          time: item.booking_time || '',
+          status: (item.status || 'pending') as "pending" | "confirmed" | "completed" | "cancelled",
+          createdAt: item.created_at,
+          ...(item.driver_name && {
+            driver: {
+              name: item.driver_name,
+              phone: item.driver_phone || '',
+              rating: 4.8, // Default rating
+              vehicle: {
+                make: item.vehicle_make || '',
+                model: item.vehicle_model || '',
+                color: item.vehicle_color || '',
+                licensePlate: item.vehicle_license_plate || '',
+              }
+            }
+          })
+        }));
+        
+        setBookings(transformedBookings);
+      }
+    } catch (error) {
+      console.error("Error in fetchBookings:", error);
+    }
+  };
+
   const createBooking = async (bookingData: Omit<Booking, "id" | "userId" | "status" | "createdAt">): Promise<Booking> => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
     if (!user) {
       throw new Error("User must be logged in to create a booking");
     }
     
-    const newBooking: Booking = {
-      id: `booking-${Date.now()}`,
-      userId: user.id,
-      ...bookingData,
-      status: "pending",
-      createdAt: new Date().toISOString()
-    };
-    
-    setBookings(prev => [...prev, newBooking]);
-    return newBooking;
+    try {
+      // Insert into Supabase
+      const { data, error } = await supabase
+        .from("Bookings")
+        .insert({
+          user_id: user.id,
+          pickup_location: bookingData.pickup,
+          dropoff_location: bookingData.dropoff,
+          booking_date: bookingData.date,
+          booking_time: bookingData.time,
+          status: "pending"
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error creating booking:", error);
+        throw new Error(error.message || "Failed to create booking");
+      }
+
+      if (!data) {
+        throw new Error("No data returned from booking creation");
+      }
+
+      // Transform to our Booking format
+      const newBooking: Booking = {
+        id: String(data.id),
+        userId: data.user_id,
+        pickup: data.pickup_location || '',
+        dropoff: data.dropoff_location || '',
+        date: data.booking_date || '',
+        time: data.booking_time || '',
+        status: (data.status || 'pending') as "pending" | "confirmed" | "completed" | "cancelled",
+        createdAt: data.created_at
+      };
+
+      setBookings(prev => [...prev, newBooking]);
+      return newBooking;
+    } catch (error: any) {
+      console.error("Error in createBooking:", error);
+      throw error;
+    }
   };
 
   const getBookingById = (id: string) => {
-    return bookings.find(b => b.id === id);
+    return bookings.find(b => String(b.id) === id);
   };
 
   const getCurrentBookings = () => {
@@ -113,22 +197,46 @@ export function BookingProvider({ children }: BookingProviderProps) {
     );
   };
 
-  const assignDriver = (bookingId: string) => {
-    setBookings(prev => prev.map(booking => {
-      if (booking.id === bookingId) {
-        // Pick a random driver from our mock data
-        const driver = MOCK_DRIVERS[Math.floor(Math.random() * MOCK_DRIVERS.length)];
-        
-        toast.success("A driver has been assigned to your booking!");
-        
-        return {
-          ...booking,
-          status: "confirmed" as const,
-          driver
-        };
+  const assignDriver = async (bookingId: string) => {
+    try {
+      // Pick a random driver from our mock data
+      const driver = MOCK_DRIVERS[Math.floor(Math.random() * MOCK_DRIVERS.length)];
+      
+      // Update in Supabase
+      const { error } = await supabase
+        .from("Bookings")
+        .update({
+          status: "confirmed",
+          driver_name: driver.name,
+          driver_phone: driver.phone,
+          vehicle_make: driver.vehicle.make,
+          vehicle_model: driver.vehicle.model,
+          vehicle_color: driver.vehicle.color,
+          vehicle_license_plate: driver.vehicle.licensePlate
+        })
+        .eq("id", bookingId);
+
+      if (error) {
+        console.error("Error assigning driver:", error);
+        return;
       }
-      return booking;
-    }));
+
+      toast.success("A driver has been assigned to your booking!");
+      
+      // Update local state
+      setBookings(prev => prev.map(booking => {
+        if (String(booking.id) === bookingId) {
+          return {
+            ...booking,
+            status: "confirmed" as const,
+            driver
+          };
+        }
+        return booking;
+      }));
+    } catch (error) {
+      console.error("Error in assignDriver:", error);
+    }
   };
 
   return (

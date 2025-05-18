@@ -29,8 +29,8 @@ export default function SignupPage() {
     try {
       setIsLoading(true);
       await signup(name, email, password);
-      toast.success("Account created successfully!");
-      navigate("/");
+      toast.success("Account created successfully! Please check your email for verification.");
+      navigate("/login");
     } catch (error: any) {
       console.error(error);
       toast.error(error.message || "Failed to create account");

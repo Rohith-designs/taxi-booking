@@ -86,10 +86,6 @@ export default function LoginPage() {
               Sign up
             </Link>
           </div>
-          
-          <div className="mt-6 text-center text-xs text-muted-foreground">
-            <p>Demo account: john@example.com / password123</p>
-          </div>
         </CardContent>
       </Card>
     </div>

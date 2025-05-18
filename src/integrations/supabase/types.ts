@@ -11,55 +11,79 @@ export type Database = {
     Tables: {
       Bookings: {
         Row: {
+          booking_date: string | null
+          booking_time: string | null
           created_at: string
-          Date: string | null
-          "Drop-off Location": string | null
+          driver_id: string | null
+          driver_name: string | null
+          driver_phone: string | null
+          dropoff_location: string | null
           id: number
-          "Pickup Location": string | null
-          Time: string | null
+          pickup_location: string | null
+          status: string | null
+          user_id: string | null
+          vehicle_color: string | null
+          vehicle_license_plate: string | null
+          vehicle_make: string | null
+          vehicle_model: string | null
         }
         Insert: {
+          booking_date?: string | null
+          booking_time?: string | null
           created_at?: string
-          Date?: string | null
-          "Drop-off Location"?: string | null
+          driver_id?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          dropoff_location?: string | null
           id?: number
-          "Pickup Location"?: string | null
-          Time?: string | null
+          pickup_location?: string | null
+          status?: string | null
+          user_id?: string | null
+          vehicle_color?: string | null
+          vehicle_license_plate?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
         }
         Update: {
+          booking_date?: string | null
+          booking_time?: string | null
           created_at?: string
-          Date?: string | null
-          "Drop-off Location"?: string | null
+          driver_id?: string | null
+          driver_name?: string | null
+          driver_phone?: string | null
+          dropoff_location?: string | null
           id?: number
-          "Pickup Location"?: string | null
-          Time?: string | null
+          pickup_location?: string | null
+          status?: string | null
+          user_id?: string | null
+          vehicle_color?: string | null
+          vehicle_license_plate?: string | null
+          vehicle_make?: string | null
+          vehicle_model?: string | null
         }
         Relationships: []
       }
       users: {
         Row: {
-          "confirm password": string | null
           created_at: string
-          Email: string | null
-          "Full Name": string | null
+          email: string | null
+          full_name: string | null
           id: number
-          password: string | null
+          password_hash: string | null
         }
         Insert: {
-          "confirm password"?: string | null
           created_at?: string
-          Email?: string | null
-          "Full Name"?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: number
-          password?: string | null
+          password_hash?: string | null
         }
         Update: {
-          "confirm password"?: string | null
           created_at?: string
-          Email?: string | null
-          "Full Name"?: string | null
+          email?: string | null
+          full_name?: string | null
           id?: number
-          password?: string | null
+          password_hash?: string | null
         }
         Relationships: []
       }

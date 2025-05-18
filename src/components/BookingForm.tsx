@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function BookingForm() {
   const [pickup, setPickup] = useState("");
@@ -25,10 +26,17 @@ export default function BookingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { createBooking } = useBooking();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast.error("Please log in to book a ride");
+      navigate("/login");
+      return;
+    }
     
     if (!pickup || !dropoff || !date || !time) {
       toast.error("Please fill in all fields");
