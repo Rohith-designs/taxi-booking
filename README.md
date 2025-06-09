@@ -1,73 +1,44 @@
-# Welcome to your Lovable project
+# Hack Culprit Virtual Internship - Project Report
 
-## Project info
+## Project Title: Taxi Booking Website
 
-**URL**: https://lovable.dev/projects/68508611-dd87-4e90-ae4d-59b4bc8548f7
+### Submitted by:
+**Name:** Adaka Venkata Rohith  
+**Internship Role:** Virtual Intern  
+**Organization:** Hack Culprit  
+**GitHub Profile:** [Rohith-designs](https://github.com/Rohith-designs)  
+**Project Duration:** 1st May 2025 – 31st May 2025  
+**Project Repository:** [taxi_booking_website](https://github.com/Rohith-designs/taxi_booking_website)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 1. Executive Summary
 
-**Use Lovable**
+This report highlights the end-to-end development of a **Taxi Booking Website**, built as part of the Hack Culprit Virtual Internship. The project focused on creating a functional and visually appealing platform that allows users to book taxi rides and track their ride status. The work emphasized real-world problem-solving using modern full-stack development practices.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/68508611-dd87-4e90-ae4d-59b4bc8548f7) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 2. Problem Statement
 
-**Use your preferred IDE**
+Urban travelers often face challenges in accessing simple, reliable online platforms for booking taxis. Existing platforms are often bloated or lack regional accessibility. This project aims to offer a streamlined, user-friendly web solution where users can book rides, view driver assignments, and track the status of their bookings from their personal dashboards.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 3. Project Objectives
 
-Follow these steps:
+- To design and develop a user-friendly taxi booking system  
+- To implement user and driver dashboards with real-time ride updates  
+- To provide an admin panel for assigning drivers and monitoring rides  
+- To integrate PHP backend with MySQL database  
+- To utilize React for dynamic frontend experience  
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 4. Development Approach
 
-# Step 3: Install the necessary dependencies.
-npm i
+The development of this platform followed a structured phase-wise process:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/68508611-dd87-4e90-ae4d-59b4bc8548f7) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **Requirement Gathering & Planning** – Identified key modules: booking, user login, driver assignment, and dashboards  
+- **Frontend Development** – Built using React and styled with Bootstrap and custom CSS  
+- **Backend Development** – Created using PHP, MySQL, and XAMPP server for handling business logic and database operations  
+- **Testing & Debugging** – Manual and functional testing for booking flow, login/authentication, and status tracking  
